@@ -100,7 +100,9 @@ extension NewGamesViewController: UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = games[indexPath.section]
-        let viewModel = TitlePreviewViewModel(title: item.title, titleOverview: item.description, imageId: item.image, titleModel: item)
-        presenter?.showDetailTitle(viewModel)
+        DispatchQueue.main.async { [weak self] in
+            let viewModel = TitlePreviewViewModel(title: item.title, titleOverview: item.description, imageId: item.image, titleModel: item)
+            self?.presenter?.showDetailTitle(viewModel)
+        }
     }
 }
