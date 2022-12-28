@@ -11,7 +11,7 @@ class SelectThemeTableViewCell: UITableViewCell {
 
     static let identifier = "SelectThemeTableViewCell"
 
-    var label: UILabel = {
+    var labelTheme: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -19,12 +19,21 @@ class SelectThemeTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addSubview(label)
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
-        label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        initialize()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension SelectThemeTableViewCell{
+    func initialize(){
+        labelThemeConfigure()
+    }
+    func labelThemeConfigure(){
+        addSubview(labelTheme)
+        labelTheme.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
+        labelTheme.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
 }

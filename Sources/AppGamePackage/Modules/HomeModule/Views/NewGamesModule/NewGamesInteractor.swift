@@ -9,7 +9,7 @@ import Foundation
 
 protocol NewGamesInteractorProtocol: AnyObject {
     func loadPopularGames()
-    func saveFavoriteGames(games: [Game])
+    func saveFavoriteGames(games: [GameViewModel])
 }
 
 class NewGamesInteractor: NewGamesInteractorProtocol {
@@ -24,7 +24,7 @@ class NewGamesInteractor: NewGamesInteractorProtocol {
     }
 
     func loadPopularGames(){
-        apiCaller.getDateGames { [weak self] result in
+        apiCaller.getGames(.DateGames) { [weak self] result in
             switch result{
                 case .success(let games):
                     self?.presenter?.didLoadGames(games: games)
@@ -34,7 +34,7 @@ class NewGamesInteractor: NewGamesInteractorProtocol {
         }
     }
 
-    func saveFavoriteGames(games: [Game]) {
+    func saveFavoriteGames(games: [GameViewModel]) {
         for game in games {
             databaseManager.addGame(game: game) { result in
                 switch result{

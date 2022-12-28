@@ -15,9 +15,9 @@ class FavoriteViewController: UIViewController {
     // MARK: - Public
     var presenter: FavoritePresenterProtocol?
 
-    private var games: [GameItem] = [GameItem]()
+    var games: [GameItem] = [GameItem]()
 
-    private let downloadTable: UITableView = {
+    let downloadTable: UITableView = {
         let table = UITableView(frame: CGRect(), style: .plain)
         table.register(TitleDownloadTableViewCell.self, forCellReuseIdentifier: TitleDownloadTableViewCell.identifier)
         return table
@@ -26,19 +26,11 @@ class FavoriteViewController: UIViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.backgroundColor = .clear
-        navigationItem.title = "Favorite"
-        view.backgroundColor = .white
-        view.addSubview(downloadTable)
-        downloadTable.delegate = self
-        downloadTable.dataSource = self
-        presenter?.didFetchGamesFromDB()
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("updateFavorite"), object: nil, queue: nil) { _ in
-            self.presenter?.didFetchGamesFromDB()
-            self.downloadTable.reloadData()
-        }
+    }
+
+    override func loadView() {
+        super.loadView()
+        initialize()
 
     }
 
@@ -49,6 +41,39 @@ class FavoriteViewController: UIViewController {
 }
 
 
+private extension FavoriteViewController{
+
+    func initialize(){
+        navConfigure()
+        tableConfigure()
+
+        presenter?.didFetchGamesFromDB()
+
+        notificationCenterConfigure()
+    }
+
+    func notificationCenterConfigure(){
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("updateFavorite"), object: nil, queue: nil) { _ in
+            self.presenter?.didFetchGamesFromDB()
+            self.downloadTable.reloadData()
+        }
+    }
+
+
+    func tableConfigure(){
+        view.addSubview(downloadTable)
+        downloadTable.delegate = self
+        downloadTable.dataSource = self
+    }
+
+    func navConfigure(){
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.backgroundColor = .clear
+        navigationItem.title = "Favorite"
+    }
+}
+
 
 // MARK: - FavoriteViewProtocol
 extension FavoriteViewController: FavoriteViewProtocol {
@@ -58,8 +83,7 @@ extension FavoriteViewController: FavoriteViewProtocol {
 
 
 }
-
-extension FavoriteViewController: UITableViewDelegate, UITableViewDataSource{
+extension FavoriteViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         games.count
     }
@@ -68,8 +92,10 @@ extension FavoriteViewController: UITableViewDelegate, UITableViewDataSource{
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleDownloadTableViewCell.identifier, for: indexPath) as? TitleDownloadTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: games[indexPath.row])
-        cell.favoriteView = self
+        let game = games[indexPath.row]
+        let item = GameViewModel(id: game.id, title: game.title ?? "Unknow", worth: game.worth ?? "N/A", image: game.imageUrl ?? "", description: game.description)
+        cell.configure(with: item)
+        
         return cell
     }
 
@@ -81,11 +107,15 @@ extension FavoriteViewController: UITableViewDelegate, UITableViewDataSource{
         switch editingStyle {
             case .delete:
                 presenter?.deleteFavoriteGame(game: games[indexPath.row])
-                self.games.remove(at: indexPath.row)
+                games.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
             default:
                 break;
         }
     }
+}
+
+extension FavoriteViewController: UITableViewDataSource{
+
 }
 

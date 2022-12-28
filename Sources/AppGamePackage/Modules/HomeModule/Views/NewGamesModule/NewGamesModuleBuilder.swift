@@ -9,9 +9,11 @@ import UIKit
 
 class NewGamesModuleBuilder {
     static func build() -> NewGamesViewController {
-        let databaseManager = DatabaseManager.shared
-        let apiCaller = APICaller.shared
-        
+
+        let databaseManager = DatabaseManager()
+
+        let apiCaller = APICaller()
+
         let interactor = NewGamesInteractor(databaseManager: databaseManager, apiCaller: apiCaller)
         let router = NewGamesRouter()
         let presenter = NewGamesPresenter(interactor: interactor, router: router)

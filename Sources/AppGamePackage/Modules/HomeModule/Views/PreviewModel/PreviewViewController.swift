@@ -15,7 +15,7 @@ class PreviewViewController: UIViewController {
     // MARK: - Public
     var presenter: PreviewPresenterProtocol?
 
-    var saveGame: Game?
+    var saveGame: GameViewModel?
 
     private let posterImageView: UIImageView = {
         let imageView = UIImageView()
@@ -57,21 +57,58 @@ class PreviewViewController: UIViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        view.addSubview(posterImageView)
-        view.addSubview(titleLabel)
-        view.addSubview(overviewLabel)
-        view.addSubview(downloadButton)
+    }
+    override func loadView() {
+        super.loadView()
+        initialize()
+    }
+}
 
-        DispatchQueue.main.async { [weak self ] in
-            self?.downloadButton.addTarget(self, action: #selector(self?.downloadTitleAt), for: .touchUpInside)
-        }
+extension PreviewViewController{
 
+    public func configure(with model: GameViewModel) {
+        self.saveGame = model
+        guard let url = URL(string: model.image) else { return }
+        posterImageView.kf.setImage(with: url)
+        titleLabel.text = model.title
+        overviewLabel.text = model.description
+    }
+}
+
+private extension PreviewViewController{
+
+    func initialize(){
+        configureUI()
+        posterImageViewConfigure()
+        posterImageViewConfigure()
+        titleLabelConfigure()
+        overviewLabelConfigure()
+        downloadButtonConfigure()
         configureConstraints()
     }
 
-    func configureConstraints() {
+    func configureUI(){
+        view.backgroundColor = .systemBackground
+    }
 
+    func posterImageViewConfigure(){
+        view.addSubview(posterImageView)
+    }
+
+    func titleLabelConfigure(){
+        view.addSubview(titleLabel)
+    }
+
+    func overviewLabelConfigure(){
+        view.addSubview(overviewLabel)
+    }
+
+    func downloadButtonConfigure(){
+        view.addSubview(downloadButton)
+        downloadButton.addTarget(self, action: #selector(self.downloadTitleAt), for: .touchUpInside)
+    }
+
+    func configureConstraints() {
         let posterImageViewConstraints = [
             posterImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             posterImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -106,17 +143,10 @@ class PreviewViewController: UIViewController {
 
     }
 
-    public func configure(with model: TitlePreviewViewModel) {
-        self.saveGame = model.titleModel
-        guard let url = URL(string: model.imageId) else { return }
-        posterImageView.kf.setImage(with: url)
-        titleLabel.text = model.title
-        overviewLabel.text = model.titleOverview
-    }
-
     @objc private func downloadTitleAt(){
         presenter?.saveFavoriteGames(game: saveGame!)
     }
+
 }
 
 // MARK: - PreviewViewProtocol

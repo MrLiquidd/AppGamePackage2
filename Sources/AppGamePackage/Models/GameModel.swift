@@ -18,8 +18,3 @@ struct Game: Decodable{
     var image: String
     var description: String
 }
-
-struct FavoriteGames{
-    var game: Game
-    var isSelect: Bool = false
-}

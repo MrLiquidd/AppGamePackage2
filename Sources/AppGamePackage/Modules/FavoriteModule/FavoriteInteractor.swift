@@ -20,7 +20,7 @@ class FavoriteInteractor: FavoriteInteractorProtocol {
     }
 
     func deleteFavoriteGame(game: GameItem) {
-        DatabaseManager.shared.deleteTitleWith(model: game) { result in
+        databaseManager.deleteTitleWith(model: game) { result in
             switch result{
                 case .success():
                     print("Successfully delted")
@@ -30,7 +30,7 @@ class FavoriteInteractor: FavoriteInteractorProtocol {
         }
     }
     func fetchGamesFromDataBase() {
-        DatabaseManager.shared.fetchGamesFromDataBase {[weak self] result in
+        databaseManager.fetchGamesFromDataBase {[weak self] result in
             switch result{
                 case .success(let games):
                     self?.presenter?.viewDidLoadGames(games: games)

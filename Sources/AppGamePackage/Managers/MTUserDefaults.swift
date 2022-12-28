@@ -11,8 +11,11 @@ public enum UserKeyValue{
     static var themeKey = "selectedTheme"
 }
 
-public struct MTUserDefaults{
-    public static var shared = MTUserDefaults()
+protocol MTUserDefaultsProtocol: AnyObject{
+    var theme: Theme { get set }
+}
+
+public class MTUserDefaults: MTUserDefaultsProtocol{
 
     public var theme: Theme{
         get{

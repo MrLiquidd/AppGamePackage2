@@ -6,7 +6,7 @@
 //
 
 protocol PreviewPresenterProtocol: AnyObject {
-    func saveFavoriteGames(game: Game)
+    func saveFavoriteGames(game: GameViewModel)
 }
 
 class PreviewPresenter {
@@ -22,7 +22,7 @@ class PreviewPresenter {
 
 extension PreviewPresenter: PreviewPresenterProtocol {
 
-    func saveFavoriteGames(game: Game) {
+    func saveFavoriteGames(game: GameViewModel) {
         interactor.saveFavoriteGame(game: game)
     }
 }

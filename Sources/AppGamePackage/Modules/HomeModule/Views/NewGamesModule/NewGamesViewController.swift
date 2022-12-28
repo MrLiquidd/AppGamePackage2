@@ -36,12 +36,14 @@ class NewGamesViewController: UIViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .secondarySystemBackground
-        view.addSubview(newGamesFeedTable)
-        newGamesFeedTable.delegate = self
-        newGamesFeedTable.dataSource = self
-        presenter?.viewDidLoadedGames()
+
     }
+
+    override func loadView() {
+        super.loadView()
+        initialize()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         newGamesFeedTable.reloadData()
@@ -59,6 +61,25 @@ class NewGamesViewController: UIViewController {
     }
 
 
+}
+
+extension NewGamesViewController{
+    func initialize(){
+        configureUI()
+        newGamesTableConfigure()
+        presenter?.viewDidLoadedGames()
+    }
+
+    func configureUI(){
+        view.backgroundColor = .secondarySystemBackground
+    }
+
+
+    func newGamesTableConfigure(){
+        view.addSubview(newGamesFeedTable)
+        newGamesFeedTable.delegate = self
+        newGamesFeedTable.dataSource = self
+    }
 }
 
 // MARK: - NewGamesViewProtocol
