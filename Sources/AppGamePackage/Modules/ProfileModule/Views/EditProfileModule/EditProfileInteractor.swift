@@ -10,7 +10,7 @@ import Foundation
 protocol EditProfileInteractorProtocol: AnyObject {
     func putNewProfile(model: ProfileModel)
     func fetchProfileFromDatabase()
-    func deleteOldProfile(model:ProfileModel)
+    func deleteOldProfile()
 }
 
 class EditProfileInteractor: EditProfileInteractorProtocol {
