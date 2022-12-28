@@ -10,7 +10,8 @@ import UIKit
 protocol EditProfileViewProtocol: AnyObject {
     func showProfile(profile: [Profile])
 }
-class EditProfileViewController: UIViewController {
+
+final class EditProfileViewController: UIViewController {
 
     var presenter: EditProfilePresenterProtocol?
 

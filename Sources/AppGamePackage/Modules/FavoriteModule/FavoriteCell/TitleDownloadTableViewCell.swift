@@ -30,6 +30,7 @@ final class TitleDownloadTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        initialize()
 
     }
 
@@ -42,12 +43,14 @@ final class TitleDownloadTableViewCell: UITableViewCell {
 extension TitleDownloadTableViewCell{
     public func configure(with model: GameViewModel) {
         guard let url = URL(string: model.image) else { return }
+        print(url)
         titlesPosterUIImageView.kf.setImage(with: url)
+        print(model.title)
         titleLabel.text = model.title
     }
 }
 
-private extension TitleDownloadTableViewCell{
+extension TitleDownloadTableViewCell{
 
     func initialize(){
         titlesPosterUIImageViewConfigure()

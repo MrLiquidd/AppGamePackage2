@@ -13,7 +13,7 @@ protocol PopularViewProtocol: AnyObject {
     func deleteFavoriteGame(game: GameViewModel)
 }
 
-class PopularViewController: UIViewController {
+final class PopularViewController: UIViewController {
 
     // MARK: - Public
     var presenter: PopularPresenterProtocol?
@@ -38,6 +38,12 @@ class PopularViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+
+    override func loadView() {
+        super.loadView()
+        initialize()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         popularFeedTable.reloadData()

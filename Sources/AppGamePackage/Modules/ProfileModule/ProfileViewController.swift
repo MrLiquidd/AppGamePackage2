@@ -17,7 +17,7 @@ protocol ProfileViewProtocol: AnyObject {
 
 }
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     // MARK: - Public
     var presenter: ProfilePresenterProtocol?
 

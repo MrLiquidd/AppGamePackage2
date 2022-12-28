@@ -32,10 +32,9 @@ enum APICallers: String{
 
 }
 
-class APICaller: APICallerProtocol{
+final class APICaller: APICallerProtocol{
 
     func getGames(_ caller: APICallers, completion: @escaping (Result<[Game], Error>) -> Void) {
-        print(caller.url)
             getGamesBy(caller.url, completion: completion)
         }
 

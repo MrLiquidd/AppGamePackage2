@@ -14,6 +14,7 @@ protocol PopularInteractorProtocol: AnyObject {
 
 class PopularInteractor: PopularInteractorProtocol {
 
+
     weak var presenter: PopularPresenterProtocol?
     var databaseManager: DatabaseManager
     var apiCaller: APICaller

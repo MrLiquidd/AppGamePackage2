@@ -10,7 +10,7 @@ import UIKit
 protocol HomeViewProtocol: AnyObject {
 }
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     // MARK: - Public
     var presenter: HomePresenterProtocol?
 

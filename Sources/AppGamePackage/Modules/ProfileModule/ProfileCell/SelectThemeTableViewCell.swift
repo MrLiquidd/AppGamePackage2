@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SelectThemeTableViewCell: UITableViewCell {
+final class SelectThemeTableViewCell: UITableViewCell {
 
     static let identifier = "SelectThemeTableViewCell"
 

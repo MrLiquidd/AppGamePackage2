@@ -5,14 +5,13 @@
 //  Created by Олег Борисов on 22.11.2022.
 //
 
-import Foundation
 import UIKit
 
 protocol TabBarViewProtocol: AnyObject{
     func setupView()
 }
 
-public class TabBarController: UITabBarController{
+final public class TabBarController: UITabBarController{
 
     private lazy var homeVC: UIViewController = {
         let navController = UINavigationController()

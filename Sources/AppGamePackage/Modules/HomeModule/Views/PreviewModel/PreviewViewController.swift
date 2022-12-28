@@ -11,7 +11,7 @@ import Kingfisher
 protocol PreviewViewProtocol: AnyObject {
 }
 
-class PreviewViewController: UIViewController {
+final class PreviewViewController: UIViewController {
     // MARK: - Public
     var presenter: PreviewPresenterProtocol?
 

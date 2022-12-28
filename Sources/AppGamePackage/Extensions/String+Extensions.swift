@@ -1,5 +1,5 @@
 //
-//  Extensions.swift
+//  String+Extensions.swift
 //  GameApp
 //
 //  Created by Олег Борисов on 19.12.2022.
@@ -17,3 +17,4 @@ extension String{
         return  str
     }
 }
+

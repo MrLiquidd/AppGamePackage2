@@ -5,7 +5,6 @@
 //  Created by Олег Борисов on 22.11.2022
 //
 
-import Foundation
 import UIKit
 
 protocol ProfileInteractorProtocol: AnyObject {
@@ -37,7 +36,7 @@ class ProfileInteractor: ProfileInteractorProtocol {
     }
 
     func deleteAllTitles() {
-        databaseManager.deleteAllTitles { result in
+        databaseManager.deleteEntity(.GamesEntity){ result in
             switch result{
                 case .success():
                     NotificationCenter.default.post(name: NSNotification.Name("updateFavorite"), object: nil)
@@ -48,14 +47,12 @@ class ProfileInteractor: ProfileInteractorProtocol {
     }
 
     func fetchProfileFromDatabase(){
-        databaseManager.fetchProfileFromDataBase { result in
-            switch result{
-                case .success(let profile):
-                    self.presenter?.loadProfile(profile: profile)
-                case .failure(let error): print(error.localizedDescription)
+        databaseManager.fetchFromDataBase{[weak self] (res:Array<Profile>?, error) in
+            if let result = res{
+                self?.presenter?.loadProfile(profile: result)
+            } else{
+                print(error!)
             }
         }
     }
-
-
 }

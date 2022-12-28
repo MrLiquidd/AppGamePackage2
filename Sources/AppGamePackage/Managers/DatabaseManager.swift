@@ -7,15 +7,26 @@
 
 import CoreData
 
-
 protocol DatabaseManagerProtocol: AnyObject{
     func addGame(game: GameViewModel, completion: @escaping(Result<Void, Error>) -> Void)
-    func fetchGamesFromDataBase(completion: @escaping (Result<[GameItem], Error>) -> Void)
-    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void)
-    func deleteAllTitles(completion: @escaping (Result<Void, Error>) -> Void)
-    func fetchProfileFromDataBase(completion: @escaping (Result<[Profile], Error>) -> Void)
-    func deleteOldProfile(completion: @escaping (Result<Void, Error>) -> Void)
     func addNewProfile(model: ProfileModel, completion: @escaping (Result<Void, Error>) -> Void)
+
+    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void)
+
+    func fetchFromDataBase<E>(completion: @escaping (_ result: [E]?, _ error: String?) -> (Void))
+    func deleteEntity(_ entity: CleanEntity ,completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+enum CleanEntity: CustomStringConvertible{
+    case ProfileEntity
+    case GamesEntity
+
+    var description: String{
+        switch self{
+            case .GamesEntity: return "GameItem"
+            case .ProfileEntity: return "Profile"
+        }
+    }
 }
 
 
@@ -43,7 +54,6 @@ public class DatabaseManager: DatabaseManagerProtocol{
     }()
 
     // MARK: - Core Data Saving support
-
     public func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
@@ -56,75 +66,34 @@ public class DatabaseManager: DatabaseManagerProtocol{
         }
     }
 
-
-    //MARK: - Same shit fetch
-    func fetchProfileFromDataBase(completion: @escaping (Result<[Profile], Error>) -> Void){
+    func deleteTitleWith<E>(model: E, completion: @escaping (Result<Void, Error>)-> Void) {
         let context = persistentContainer.viewContext
-        let request: NSFetchRequest<Profile>
-        request = Profile.fetchRequest()
-
-        do{
-            let profile = try context.fetch(request)
-            completion(.success(profile))
-        } catch {
-            completion(.failure(DatabaseError.failureToFetchData))
-        }
-    }
-
-    func fetchGamesFromDataBase(completion: @escaping (Result<[GameItem], Error>) -> Void){
-
-        let context = persistentContainer.viewContext
-        let request: NSFetchRequest<GameItem>
-        request = GameItem.fetchRequest()
-
-        do{
-            let games = try context.fetch(request)
-            completion(.success(games))
-        } catch {
-            completion(.failure(DatabaseError.failureToFetchData))
-        }
-    }
-
-    //MARK: - Same shit
-    func deleteAllTitles(completion: @escaping (Result<Void, Error>) -> Void){
-        let context = persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GameItem")
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        do{
-            try context.execute(batchDeleteRequest)
-            completion(.success(()))
-        } catch{
-            completion(.failure(DatabaseError.failureToDeleteData))
-        }
-    }
-
-    func deleteOldProfile(completion: @escaping (Result<Void, Error>) -> Void){
-        let context = persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Profile")
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        do{
-            try context.execute(batchDeleteRequest)
-            completion(.success(()))
-        } catch{
-            completion(.failure(DatabaseError.failureToDeleteData))
-        }
-    }
-
-    //MARK: - SAME SHIT
-    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void) {
-        let context = persistentContainer.viewContext
-        context.delete(model)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "\(E.self)")
 
         do {
-            try context.save()
+            let objects = try context.fetch(fetchRequest)
+            for object in objects{
+                context.delete(object as! NSManagedObject)
+            }
             completion(.success(()))
+
         } catch {
             completion(.failure(DatabaseError.failureToDeleteData))
         }
     }
 
+    func deleteEntity(_ entity: CleanEntity ,completion: @escaping (Result<Void, Error>) -> Void){
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity.description)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do{
+            try context.execute(batchDeleteRequest)
+            completion(.success(()))
+        } catch{
+            completion(.failure(DatabaseError.failureToDeleteData))
+        }
+    }
 
-    //MARK: - hz
     func addNewProfile(model: ProfileModel, completion: @escaping (Result<Void, Error>) -> Void){
         let context = persistentContainer.viewContext
 
@@ -157,4 +126,16 @@ public class DatabaseManager: DatabaseManagerProtocol{
             completion(.failure(DatabaseError.failureToSaveData))
         }
     }
+
+    func fetchFromDataBase<E>(completion: @escaping (_ result: [E]?, _ error: String?) -> (Void)){
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "\(E.self)")
+        do{
+            let result = try context.fetch(fetchRequest) as! [E]
+            completion(result, nil)
+        } catch {
+            completion(nil, error.localizedDescription)
+        }
+    }
+
 }

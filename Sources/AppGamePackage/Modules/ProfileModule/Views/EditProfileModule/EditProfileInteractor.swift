@@ -23,17 +23,17 @@ class EditProfileInteractor: EditProfileInteractorProtocol {
     }
 
     func fetchProfileFromDatabase(){
-        databaseManager.fetchProfileFromDataBase { result in
-            switch result{
-                case .success(let profile):
-                    self.presenter?.loadProfile(profile: profile)
-                case .failure(let error): print(error.localizedDescription)
+        databaseManager.fetchFromDataBase{[weak self] (res:Array<Profile>?, error) in
+            if let result = res{
+                self?.presenter?.loadProfile(profile: result)
+            } else{
+                print(error!)
             }
         }
     }
 
     func deleteOldProfile(model: ProfileModel) {
-        databaseManager.deleteOldProfile { result in
+        databaseManager.deleteEntity(.ProfileEntity){ result in
             switch result{
                 case .success():
                     print("Successfully delted")

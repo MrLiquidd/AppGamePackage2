@@ -11,7 +11,7 @@ protocol FavoriteViewProtocol: AnyObject {
     func showDownloadGames(games: [GameItem])
 }
 
-class FavoriteViewController: UIViewController {
+final class FavoriteViewController: UIViewController {
     // MARK: - Public
     var presenter: FavoritePresenterProtocol?
 

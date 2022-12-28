@@ -5,14 +5,13 @@
 //  Created by Олег Борисов on 25.12.2022.
 //
 
-import Foundation
 import UIKit
 
 protocol SegmentControlFooterProtocol: AnyObject{
     func showNewTheme(theme: Theme)
 }
 
-class SegmentControlFooter: UIView{
+final class SegmentControlFooter: UIView{
 
     weak var userDefaults: MTUserDefaultsProtocol?
 

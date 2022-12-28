@@ -5,7 +5,6 @@
 //  Created by Олег Борисов on 22.11.2022.
 //
 
-import Foundation
 import UIKit
 
 public protocol TabBarRouterProtocol: AnyObject{ }

@@ -30,12 +30,11 @@ class FavoriteInteractor: FavoriteInteractorProtocol {
         }
     }
     func fetchGamesFromDataBase() {
-        databaseManager.fetchGamesFromDataBase {[weak self] result in
-            switch result{
-                case .success(let games):
-                    self?.presenter?.viewDidLoadGames(games: games)
-                case .failure(let error):
-                    print(error.localizedDescription)
+        databaseManager.fetchFromDataBase{[weak self] (res:Array<GameItem>?, error) in
+            if let result = res{
+                self?.presenter?.viewDidLoadGames(games: result)
+            } else{
+                print(error!)
             }
         }
     }

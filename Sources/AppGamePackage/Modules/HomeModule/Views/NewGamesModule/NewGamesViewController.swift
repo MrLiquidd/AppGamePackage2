@@ -13,7 +13,7 @@ protocol NewGamesViewProtocol: AnyObject {
     func deleteFavoriteGame(game: GameViewModel)
 }
 
-class NewGamesViewController: UIViewController {
+final class NewGamesViewController: UIViewController {
     // MARK: - Public
     var presenter: NewGamesPresenterProtocol?
 
