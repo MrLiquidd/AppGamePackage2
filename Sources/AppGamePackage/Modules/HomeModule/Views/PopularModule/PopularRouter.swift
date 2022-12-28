@@ -6,13 +6,13 @@
 //
 
 protocol PopularRouterProtocol {
-    func showDetailTitle(_ viewModel: TitlePreviewViewModel)
+    func showDetailTitle(_ viewModel: GameViewModel)
 }
 
 class PopularRouter: PopularRouterProtocol {
     weak var viewController: PopularViewController?
 
-    func showDetailTitle(_ viewModel: TitlePreviewViewModel) {
+    func showDetailTitle(_ viewModel: GameViewModel) {
         let vc = PreviewModuleBuilder.build()
         vc.configure(with: viewModel)
         viewController?.navigationController?.pushViewController(vc, animated: true)

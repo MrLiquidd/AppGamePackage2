@@ -8,11 +8,9 @@
 import UIKit
 import Kingfisher
 
-class TitleDownloadTableViewCell: UITableViewCell {
+final class TitleDownloadTableViewCell: UITableViewCell {
 
     static let identifier = "TitleDownloadTableViewCell"
-
-    var favoriteView: FavoriteViewProtocol?
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -32,15 +30,39 @@ class TitleDownloadTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(titlesPosterUIImageView)
-        contentView.addSubview(titleLabel)
-
-        applyConstraints()
 
     }
 
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
-    private func applyConstraints() {
+}
+
+extension TitleDownloadTableViewCell{
+    public func configure(with model: GameViewModel) {
+        guard let url = URL(string: model.image) else { return }
+        titlesPosterUIImageView.kf.setImage(with: url)
+        titleLabel.text = model.title
+    }
+}
+
+private extension TitleDownloadTableViewCell{
+
+    func initialize(){
+        titlesPosterUIImageViewConfigure()
+        titleLabelConfigure()
+        applyConstraints()
+    }
+
+    func titlesPosterUIImageViewConfigure(){
+        contentView.addSubview(titlesPosterUIImageView)
+    }
+    func titleLabelConfigure(){
+        contentView.addSubview(titleLabel)
+    }
+
+    func applyConstraints() {
         let titlesPosterUIImageViewConstraints = [
             titlesPosterUIImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             titlesPosterUIImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
@@ -55,20 +77,9 @@ class TitleDownloadTableViewCell: UITableViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ]
 
-
-        NSLayoutConstraint.activate(titlesPosterUIImageViewConstraints)
-        NSLayoutConstraint.activate(titleLabelConstraints)
+        NSLayoutConstraint.activate([
+            titlesPosterUIImageViewConstraints,
+            titleLabelConstraints
+        ])
     }
-
-    public func configure(with model: GameItem) {
-        guard let url = URL(string: model.imageUrl ?? "") else { return }
-        titlesPosterUIImageView.kf.setImage(with: url)
-        titleLabel.text = model.title
-    }
-
-
-    required init?(coder: NSCoder) {
-        fatalError()
-    }
-
 }

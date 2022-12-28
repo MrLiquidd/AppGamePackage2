@@ -5,12 +5,21 @@
 //  Created by Олег Борисов on 21.12.2022.
 //
 
-import Foundation
-import UIKit
 import CoreData
 
-public class DatabaseManager{
-    static let shared = DatabaseManager()
+
+protocol DatabaseManagerProtocol: AnyObject{
+    func addGame(game: GameViewModel, completion: @escaping(Result<Void, Error>) -> Void)
+    func fetchGamesFromDataBase(completion: @escaping (Result<[GameItem], Error>) -> Void)
+    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void)
+    func deleteAllTitles(completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchProfileFromDataBase(completion: @escaping (Result<[Profile], Error>) -> Void)
+    func deleteOldProfile(completion: @escaping (Result<Void, Error>) -> Void)
+    func addNewProfile(model: ProfileModel, completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+
+public class DatabaseManager: DatabaseManagerProtocol{
 
     enum DatabaseError: Error{
         case failureToSaveData
@@ -20,7 +29,6 @@ public class DatabaseManager{
 
 
     // MARK: - Core Data stack
-
     lazy var persistentContainer: NSPersistentContainer = {
         guard let modelURL = Bundle.module.url(forResource: "GameApp", withExtension: "momd"),let model = NSManagedObjectModel(contentsOf: modelURL) else {
             return NSPersistentContainer()
@@ -36,34 +44,30 @@ public class DatabaseManager{
 
     // MARK: - Core Data Saving support
 
-    public func saveContext () {
+    public func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
 
-    func addGame(game: Game, completion: @escaping(Result<Void, Error>) -> Void){
-        let context = persistentContainer.viewContext
-        let item = GameItem(context: context)
 
-        item.id = game.id
-        item.title = game.title
-        item.imageUrl = game.image
-        item.descriptionGame = game.description
-        item.worth = game.worth
+    //MARK: - Same shit fetch
+    func fetchProfileFromDataBase(completion: @escaping (Result<[Profile], Error>) -> Void){
+        let context = persistentContainer.viewContext
+        let request: NSFetchRequest<Profile>
+        request = Profile.fetchRequest()
+
         do{
-            try context.save()
-            completion(.success(()))
-        } catch{
-            completion(.failure(DatabaseError.failureToSaveData))
+            let profile = try context.fetch(request)
+            completion(.success(profile))
+        } catch {
+            completion(.failure(DatabaseError.failureToFetchData))
         }
     }
 
@@ -81,32 +85,7 @@ public class DatabaseManager{
         }
     }
 
-    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void) {
-
-        let context = persistentContainer.viewContext
-        context.delete(model)
-
-        do {
-            try context.save()
-            completion(.success(()))
-        } catch {
-            completion(.failure(DatabaseError.failureToDeleteData))
-        }
-    }
-
-    func fetchProfileFromDataBase(completion: @escaping (Result<[Profile], Error>) -> Void){
-        let context = persistentContainer.viewContext
-        let request: NSFetchRequest<Profile>
-        request = Profile.fetchRequest()
-
-        do{
-            let profile = try context.fetch(request)
-            completion(.success(profile))
-        } catch {
-            completion(.failure(DatabaseError.failureToFetchData))
-        }
-    }
-
+    //MARK: - Same shit
     func deleteAllTitles(completion: @escaping (Result<Void, Error>) -> Void){
         let context = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GameItem")
@@ -131,9 +110,22 @@ public class DatabaseManager{
         }
     }
 
+    //MARK: - SAME SHIT
+    func deleteTitleWith(model: GameItem, completion: @escaping (Result<Void, Error>)-> Void) {
+        let context = persistentContainer.viewContext
+        context.delete(model)
 
-    func putNewProfile(model: ProfileModel, completion: @escaping (Result<Void, Error>) -> Void){
+        do {
+            try context.save()
+            completion(.success(()))
+        } catch {
+            completion(.failure(DatabaseError.failureToDeleteData))
+        }
+    }
 
+
+    //MARK: - hz
+    func addNewProfile(model: ProfileModel, completion: @escaping (Result<Void, Error>) -> Void){
         let context = persistentContainer.viewContext
 
         let item = Profile(context: context)
@@ -147,6 +139,22 @@ public class DatabaseManager{
         } catch{
             completion(.failure(DatabaseError.failureToSaveData))
         }
+    }
 
+    func addGame(game: GameViewModel, completion: @escaping(Result<Void, Error>) -> Void){
+        let context = persistentContainer.viewContext
+        let item = GameItem(context: context)
+
+        item.id = game.id
+        item.title = game.title
+        item.imageUrl = game.image
+        item.descriptionGame = game.description
+        item.worth = game.worth
+        do{
+            try context.save()
+            completion(.success(()))
+        } catch{
+            completion(.failure(DatabaseError.failureToSaveData))
+        }
     }
 }

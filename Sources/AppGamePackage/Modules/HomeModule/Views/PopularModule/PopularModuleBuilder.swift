@@ -9,8 +9,8 @@ import UIKit
 
 class PopularModuleBuilder {
     static func build() -> PopularViewController {
-        let databaseManager = DatabaseManager.shared
-        let apiCaller = APICaller.shared
+        let databaseManager = DatabaseManager()
+        let apiCaller = APICaller()
 
         let interactor = PopularInteractor( databaseManager: databaseManager, apiCaller: apiCaller)
         let router = PopularRouter()

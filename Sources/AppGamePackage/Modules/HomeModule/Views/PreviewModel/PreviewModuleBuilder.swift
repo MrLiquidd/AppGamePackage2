@@ -9,7 +9,10 @@ import UIKit
 
 class PreviewModuleBuilder {
     static func build() -> PreviewViewController {
-        let interactor = PreviewInteractor()
+
+        let databaseManager = DatabaseManager()
+
+        let interactor = PreviewInteractor(databaseManager: databaseManager)
         let router = PreviewRouter()
         let presenter = PreviewPresenter(interactor: interactor, router: router)
         let viewController = PreviewViewController()

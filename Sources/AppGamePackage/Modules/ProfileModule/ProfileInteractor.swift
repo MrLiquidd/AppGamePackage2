@@ -28,7 +28,7 @@ class ProfileInteractor: ProfileInteractorProtocol {
     }
 
     func setNewTheme(theme: Theme) {
-        MTUserDefaults.shared.theme = theme
+        userDefaults.theme = theme
     }
 
     func showNewTheme(){
@@ -37,7 +37,7 @@ class ProfileInteractor: ProfileInteractorProtocol {
     }
 
     func deleteAllTitles() {
-        DatabaseManager.shared.deleteAllTitles { result in
+        databaseManager.deleteAllTitles { result in
             switch result{
                 case .success():
                     NotificationCenter.default.post(name: NSNotification.Name("updateFavorite"), object: nil)
@@ -48,7 +48,7 @@ class ProfileInteractor: ProfileInteractorProtocol {
     }
 
     func fetchProfileFromDatabase(){
-        DatabaseManager.shared.fetchProfileFromDataBase { result in
+        databaseManager.fetchProfileFromDataBase { result in
             switch result{
                 case .success(let profile):
                     self.presenter?.loadProfile(profile: profile)

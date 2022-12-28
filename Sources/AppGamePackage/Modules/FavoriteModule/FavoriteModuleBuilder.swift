@@ -9,8 +9,7 @@ import UIKit
 
 class FavoriteModuleBuilder {
     static func build() -> FavoriteViewController {
-        let databaseManager = DatabaseManager.shared
-
+        let databaseManager = DatabaseManager()
         
         let interactor = FavoriteInteractor(databaseManager: databaseManager)
         let router = FavoriteRouter()

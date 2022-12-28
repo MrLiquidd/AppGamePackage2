@@ -16,9 +16,14 @@ protocol EditProfileInteractorProtocol: AnyObject {
 class EditProfileInteractor: EditProfileInteractorProtocol {
 
     weak var presenter: EditProfilePresenterProtocol?
+    var databaseManager: DatabaseManager
+
+    init(databaseManager: DatabaseManager) {
+        self.databaseManager = databaseManager
+    }
 
     func fetchProfileFromDatabase(){
-        DatabaseManager.shared.fetchProfileFromDataBase { result in
+        databaseManager.fetchProfileFromDataBase { result in
             switch result{
                 case .success(let profile):
                     self.presenter?.loadProfile(profile: profile)
@@ -28,7 +33,7 @@ class EditProfileInteractor: EditProfileInteractorProtocol {
     }
 
     func deleteOldProfile(model: ProfileModel) {
-        DatabaseManager.shared.deleteOldProfile { result in
+        databaseManager.deleteOldProfile { result in
             switch result{
                 case .success():
                     print("Successfully delted")
@@ -39,7 +44,7 @@ class EditProfileInteractor: EditProfileInteractorProtocol {
     }
 
     func putNewProfile(model: ProfileModel){
-        DatabaseManager.shared.putNewProfile(model: model) { result in
+        databaseManager.addNewProfile(model: model) { result in
             switch result{
                 case .success():
                     NotificationCenter.default.post(name: NSNotification.Name("updateProfile"), object: nil)

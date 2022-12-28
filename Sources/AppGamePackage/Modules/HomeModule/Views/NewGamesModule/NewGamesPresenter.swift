@@ -7,10 +7,10 @@
 
 protocol NewGamesPresenterProtocol: AnyObject {
     func didLoadGames(games: [Game])
-    func showDetailTitle(_ viewModel: TitlePreviewViewModel)
+    func showDetailTitle(_ viewModel: GameViewModel)
 
     func viewDidLoadedGames()
-    func saveFavoriteGames(games: [Game])
+    func saveFavoriteGames(games: [GameViewModel])
 }
 
 class NewGamesPresenter {
@@ -34,11 +34,11 @@ extension NewGamesPresenter: NewGamesPresenterProtocol {
         interactor.loadPopularGames()
     }
 
-    func saveFavoriteGames(games: [Game]) {
+    func saveFavoriteGames(games: [GameViewModel]) {
         interactor.saveFavoriteGames(games: games)
     }
 
-    func showDetailTitle(_ viewModel: TitlePreviewViewModel) {
+    func showDetailTitle(_ viewModel: GameViewModel) {
         router.showDetailTitle(viewModel)
     }
 

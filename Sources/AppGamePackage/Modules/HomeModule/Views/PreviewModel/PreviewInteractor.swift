@@ -8,14 +8,20 @@
 import Foundation
 
 protocol PreviewInteractorProtocol: AnyObject {
-    func saveFavoriteGame(game: Game)
+    func saveFavoriteGame(game: GameViewModel)
 }
 
 class PreviewInteractor: PreviewInteractorProtocol {
     weak var presenter: PreviewPresenterProtocol?
+    var databaseManager: DatabaseManager
+    
 
-    func saveFavoriteGame(game: Game) {
-        DatabaseManager.shared.addGame(game: game) { result in
+    init(databaseManager: DatabaseManager) {
+        self.databaseManager = databaseManager
+    }
+
+    func saveFavoriteGame(game: GameViewModel) {
+        databaseManager.addGame(game: game) { result in
             switch result{
                 case .success():
                     NotificationCenter.default.post(name: NSNotification.Name("updateFavorite"), object: nil)

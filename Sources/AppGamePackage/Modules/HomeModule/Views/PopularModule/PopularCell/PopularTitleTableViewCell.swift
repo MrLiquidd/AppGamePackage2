@@ -13,7 +13,7 @@ class PopularTitleTableViewCell: UITableViewCell {
 
     var popularView: PopularViewProtocol?
 
-    var saveGames: Game?
+    var saveGames: GameViewModel?
 
     private let posterImageView: UIImageView = {
         let imageView = UIImageView()
@@ -55,11 +55,11 @@ class PopularTitleTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(posterImageView)
-        contentView.addSubview(nameTitleLabel)
-        contentView.addSubview(downloadTitleButton)
-        contentView.addSubview(worthTitleLable)
-        applyConstraints()
+        initialize()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func layoutSubviews() {
@@ -67,8 +67,46 @@ class PopularTitleTableViewCell: UITableViewCell {
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
     }
 
+}
 
-    private func applyConstraints() {
+extension PopularTitleTableViewCell{
+    func configure(with model: GameViewModel) {
+        self.saveGames = model
+        guard let url = URL(string: model.image) else { return }
+        posterImageView.kf.setImage(with: url)
+        nameTitleLabel.text = model.title.maxLength(length: 60)
+        worthTitleLable.text = model.worth
+        downloadTitleButton.addTarget(self, action: #selector(tapFavorite), for: .touchUpInside)
+    }
+}
+
+private extension PopularTitleTableViewCell{
+
+    func initialize(){
+        posterImageViewConfigure()
+        nameTitleLabelConfigure()
+        downloadTitleButtonConfigure()
+        worthTitleLableConfigure()
+        applyConstraints()
+    }
+
+    func posterImageViewConfigure(){
+        contentView.addSubview(posterImageView)
+    }
+
+    func nameTitleLabelConfigure(){
+        contentView.addSubview(nameTitleLabel)
+    }
+
+    func downloadTitleButtonConfigure(){
+        contentView.addSubview(downloadTitleButton)
+    }
+
+    func worthTitleLableConfigure(){
+        contentView.addSubview(worthTitleLable)
+    }
+
+    func applyConstraints() {
         let posterImageViewConstraints = [
             posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             posterImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -92,20 +130,13 @@ class PopularTitleTableViewCell: UITableViewCell {
             nameTitleLabel.widthAnchor.constraint(equalToConstant: 270)
         ]
 
-        NSLayoutConstraint.activate(posterImageViewConstraints)
-        NSLayoutConstraint.activate(downloadTitleButtonConstraints)
-        NSLayoutConstraint.activate(nameTitleLabelConstraints)
-        NSLayoutConstraint.activate(worthTitleLableConstraints)
+        NSLayoutConstraint.activate([
+            posterImageViewConstraints,
+            downloadTitleButtonConstraints,
+            nameTitleLabelConstraints,
+            worthTitleLableConstraints
+        ])
 
-    }
-
-    public func configure(with model: Game) {
-        self.saveGames = model
-        guard let url = URL(string: model.image) else { return }
-        posterImageView.kf.setImage(with: url)
-        nameTitleLabel.text = model.title.maxLength(length: 60)
-        worthTitleLable.text = model.worth
-        downloadTitleButton.addTarget(self, action: #selector(tapFavorite), for: .touchUpInside)
     }
 
     @objc func tapFavorite(){
@@ -116,10 +147,6 @@ class PopularTitleTableViewCell: UITableViewCell {
             popularView?.saveFavoriteGame(game: saveGames!)
             downloadTitleButton.isSelected = true
         }
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
 }

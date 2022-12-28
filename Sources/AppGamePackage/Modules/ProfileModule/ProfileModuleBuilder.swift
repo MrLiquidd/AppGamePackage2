@@ -9,8 +9,8 @@ import UIKit
 
 class ProfileModuleBuilder {
     static func build() -> ProfileViewController {
-        let databaseManager = DatabaseManager.shared
-        let userDefaults = MTUserDefaults.shared
+        let databaseManager = DatabaseManager()
+        let userDefaults = MTUserDefaults()
 
         let interactor = ProfileInteractor(databaseManager: databaseManager, userDefaults: userDefaults)
         let router = ProfileRouter()
@@ -18,6 +18,7 @@ class ProfileModuleBuilder {
         let viewController = ProfileViewController()
         presenter.view  = viewController
         viewController.presenter = presenter
+        viewController.userDefaults = userDefaults
         interactor.presenter = presenter
         router.viewController = viewController
         return viewController

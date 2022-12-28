@@ -23,6 +23,8 @@ class ProfileViewController: UIViewController {
 
     var footerProtocol: SegmentControlFooterProtocol?
 
+    var userDefaults: MTUserDefaultsProtocol?
+
     private var profile: Profile?
 
     private var tableView =  UITableView()
@@ -36,8 +38,6 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         initialize()
     }
-
-
 }
 
 private extension ProfileViewController{
@@ -72,6 +72,7 @@ private extension ProfileViewController{
         let frame = CGRect(x: 0, y: 88, width: view.frame.width, height: 80)
         segmentControlFooter = SegmentControlFooter(frame: frame)
         segmentControlFooter.profileProtocol = self
+        segmentControlFooter.userDefaults = userDefaults
 
     }
 
@@ -111,7 +112,7 @@ extension ProfileViewController: ProfileViewProtocol {
     }
 }
 
-extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
+extension ProfileViewController: UITableViewDelegate {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return SettingsSection.allCases.count
@@ -125,8 +126,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
             case .ClearData: return ClearDatabaseOptions.allCases.count
         }
     }
-
-
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.identifier, for: indexPath) as! SettingsTableViewCell
@@ -171,3 +170,5 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
 
 }
 
+
+extension ProfileViewController: UITableViewDataSource{ }

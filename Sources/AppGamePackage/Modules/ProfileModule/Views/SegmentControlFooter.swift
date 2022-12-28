@@ -14,6 +14,8 @@ protocol SegmentControlFooterProtocol: AnyObject{
 
 class SegmentControlFooter: UIView{
 
+    weak var userDefaults: MTUserDefaultsProtocol?
+
     var profileProtocol: ProfileViewProtocol?
 
     private let segmentControl: UISegmentedControl = {
@@ -28,13 +30,7 @@ class SegmentControlFooter: UIView{
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(segmentControl)
-        segmentControl.selectedSegmentIndex = MTUserDefaults.shared.theme.rawValue
-        segmentControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true
-        segmentControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20).isActive = true
-        segmentControl.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        segmentControl.addTarget(self, action: #selector(segmentChange), for: .valueChanged)
-
+        initialize()
     }
     @objc func segmentChange(){
         let theme = Theme(rawValue: segmentControl.selectedSegmentIndex) ?? .device
@@ -47,12 +43,30 @@ class SegmentControlFooter: UIView{
     }
 }
 
+private extension SegmentControlFooter{
+    func initialize(){
+        segmentControlConfigure()
+        applyConstraints()
+    }
+
+    func segmentControlConfigure(){
+        addSubview(segmentControl)
+        segmentControl.selectedSegmentIndex = userDefaults?.theme.rawValue ?? 0
+        segmentControl.addTarget(self, action: #selector(segmentChange), for: .valueChanged)
+    }
+
+    func applyConstraints(){
+        NSLayoutConstraint.activate([
+            segmentControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            segmentControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            segmentControl.heightAnchor.constraint(equalToConstant: 44)])
+    }
+}
+
 extension SegmentControlFooter: SegmentControlFooterProtocol{
     func showNewTheme(theme: Theme) {
         UIView.animate(withDuration: 0.5) {
             self.window?.overrideUserInterfaceStyle = theme.getUserInterfaceStyle()
         }
     }
-
-
 }

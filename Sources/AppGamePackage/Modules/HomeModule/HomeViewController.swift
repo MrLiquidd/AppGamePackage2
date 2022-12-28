@@ -47,18 +47,20 @@ class HomeViewController: UIViewController {
 // MARK: - Private functions
 private extension HomeViewController {
     func initialize() {
-        view.backgroundColor = .systemBackground
         configureUI()
         configurePopularView()
         containereUpcomingView()
     }
 
 
-    private func configureUI(){
+    func configureUI(){
+        view.backgroundColor = .systemBackground
         navigationItem.titleView = segmentControl
+        self.containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         addBlurEffect()
         segmentControl.addTarget(self, action: #selector(segmentSelectedAction), for: .valueChanged)
     }
+
     func addBlurEffect() {
         let bounds = self.navigationController?.navigationBar.bounds
         let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
@@ -67,7 +69,7 @@ private extension HomeViewController {
         self.navigationController?.navigationBar.sendSubviewToBack(visualEffectView)
     }
 
-    @objc private func segmentSelectedAction(sender: UISegmentedControl) {
+    @objc func segmentSelectedAction(sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
             case 0:
                 UIView.animate(withDuration: 0.5) {
@@ -83,26 +85,19 @@ private extension HomeViewController {
         }
     }
 
-    private func configurePopularView(){
-
-        self.containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-
+    func configurePopularView(){
         addChild(popularVC)
-        addChild(upcomimgVC)
-
         self.view.addSubview(popularVC.view)
-        self.view.addSubview(upcomimgVC.view)
-
         popularVC.didMove(toParent: self)
-        upcomimgVC.didMove(toParent: self)
-
         popularVC.view.frame = self.view.frame
-        upcomimgVC.view.frame = self.view.frame
 
     }
 
-    private func containereUpcomingView(){
-
+    func containereUpcomingView(){
+        addChild(upcomimgVC)
+        self.view.addSubview(upcomimgVC.view)
+        upcomimgVC.didMove(toParent: self)
+        upcomimgVC.view.frame = self.view.frame
     }
 
 
