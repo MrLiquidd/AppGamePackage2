@@ -25,7 +25,7 @@ class EditProfilePresenter {
 
 extension EditProfilePresenter: EditProfilePresenterProtocol {
     func putNewProfile(model: ProfileModel) {
-        interactor.deleteOldProfile(model:model)
+        interactor.deleteOldProfile()
         interactor.putNewProfile(model: model)
     }
 
