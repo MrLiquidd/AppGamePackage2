@@ -32,7 +32,7 @@ class EditProfileInteractor: EditProfileInteractorProtocol {
         }
     }
 
-    func deleteOldProfile(model: ProfileModel) {
+    func deleteOldProfile() {
         databaseManager.deleteEntity(.ProfileEntity){ result in
             switch result{
                 case .success():
