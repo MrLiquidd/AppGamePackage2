@@ -43,14 +43,19 @@ final class ProfileViewController: UIViewController {
 private extension ProfileViewController{
     func initialize(){
         configureUI()
-        view.backgroundColor = .systemBackground
         configureHeader()
         configureFooter()
         configureTable()
         fetchShowProfile()
+        fetchTheme()
+    }
+
+    func fetchTheme(){
+        presenter?.fetchTheme()
     }
 
     func configureTable(){
+        view.backgroundColor = .systemBackground
         tableView = UITableView(frame: view.bounds, style: .insetGrouped)
         tableView.rowHeight = 60
         tableView.register(SettingsTableViewCell.self, forCellReuseIdentifier: SettingsTableViewCell.identifier)

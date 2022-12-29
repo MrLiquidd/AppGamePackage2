@@ -38,7 +38,6 @@ public class DatabaseManager: DatabaseManagerProtocol{
         case failureToFetchData
     }
 
-
     // MARK: - Core Data stack
     lazy var persistentContainer: NSPersistentContainer = {
         guard let modelURL = Bundle.module.url(forResource: "GameApp", withExtension: "momd"),let model = NSManagedObjectModel(contentsOf: modelURL) else {
@@ -54,14 +53,14 @@ public class DatabaseManager: DatabaseManagerProtocol{
     }()
 
     // MARK: - Core Data Saving support
-    public func saveContext() {
+    public func saveContext(completion: @escaping(Result<Void, Error>) -> Void) {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
+                completion(.success(()))
                 try context.save()
             } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                completion(.failure(DatabaseError.failureToSaveData))
             }
         }
     }
@@ -102,12 +101,7 @@ public class DatabaseManager: DatabaseManagerProtocol{
         item.image = dataImage
         item.email = model.email
         item.name = model.name
-        do{
-            try context.save()
-            completion(.success(()))
-        } catch{
-            completion(.failure(DatabaseError.failureToSaveData))
-        }
+        saveContext(completion: completion)
     }
 
     func addGame(game: GameViewModel, completion: @escaping(Result<Void, Error>) -> Void){
@@ -119,12 +113,7 @@ public class DatabaseManager: DatabaseManagerProtocol{
         item.imageUrl = game.image
         item.descriptionGame = game.description
         item.worth = game.worth
-        do{
-            try context.save()
-            completion(.success(()))
-        } catch{
-            completion(.failure(DatabaseError.failureToSaveData))
-        }
+        saveContext(completion: completion)
     }
 
     func fetchFromDataBase<E>(completion: @escaping (_ result: [E]?, _ error: String?) -> (Void)){

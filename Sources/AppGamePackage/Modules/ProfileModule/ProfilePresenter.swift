@@ -13,6 +13,7 @@ protocol ProfilePresenterProtocol: AnyObject {
     func loadProfile(profile: [Profile])
     func setNewTheme(theme: Theme)
     func showNewTheme(newTheme: Theme)
+    func fetchTheme()
 }
 
 class ProfilePresenter {
@@ -27,6 +28,10 @@ class ProfilePresenter {
 }
 
 extension ProfilePresenter: ProfilePresenterProtocol {
+    func fetchTheme() {
+        interactor.showNewTheme()
+    }
+
     func setNewTheme(theme: Theme) {
         interactor.setNewTheme(theme: theme)
         interactor.showNewTheme()

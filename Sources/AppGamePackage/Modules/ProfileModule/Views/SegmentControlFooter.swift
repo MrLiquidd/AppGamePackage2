@@ -64,6 +64,7 @@ private extension SegmentControlFooter{
 
 extension SegmentControlFooter: SegmentControlFooterProtocol{
     func showNewTheme(theme: Theme) {
+        segmentControl.selectedSegmentIndex = theme.rawValue
         UIView.animate(withDuration: 0.5) {
             self.window?.overrideUserInterfaceStyle = theme.getUserInterfaceStyle()
         }
